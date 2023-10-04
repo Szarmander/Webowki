@@ -1,0 +1,19 @@
+Zadanie 2.10 i 4.10:
+
+1. Przygotuj prosty serwis internetowy w Node.js. Serwis ma się składać z:
+		
+  strony głównej (adres "/")
+		
+  strony "thank you page" (adres "/dziekujemy")
+		
+  Prostego API zwracającego tablicę dowolnych obiektów jednego typu (adres "/api")
+	
+	
+	
+2. Na stronie głównej powinien znajdować się prosty formularz kontaktowy (textarea na wiadomość + przycisk "wyślij")
+	
+3. Formularz powinien być odczytywany przez Node pod adresem "/kontakt"
+	
+3. Przesłane dane mają być zapisywane do pliku w folderze "contact". Nazwa pliku to "message-<timestamp>.txt"
+	
+4. Strona powinna zwrócić odpowiedź 404 z wiadomością w postaci JSON po wejściu w nieistniejący link

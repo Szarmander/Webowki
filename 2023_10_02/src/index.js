@@ -38,27 +38,86 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var http_1 = require("http");
 var promises_1 = require("fs/promises");
-var hostname = "127.0.0.1";
-var port = 3000;
+var HOSTNAME = "127.0.0.1";
+var PORT = 3000;
+var API = [{
+        id: 1,
+        name: 'Jakubek'
+    }, {
+        id: 2,
+        name: "Hugciu"
+    }, {
+        id: 3,
+        name: "Mateuszek"
+    }];
 var server = (0, http_1.createServer)(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, html;
+    var url, method, html, body_1, html;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 url = req.url;
+                method = req.method;
                 if (!(url === '/')) return [3 /*break*/, 2];
                 res.statusCode = 200;
-                return [4 /*yield*/, (0, promises_1.readFile)("./templates/home.html")];
+                return [4 /*yield*/, (0, promises_1.readFile)("./templates/index.html")];
             case 1:
                 html = _a.sent();
                 res.setHeader('content-type', 'text/html');
                 res.write(html);
                 res.end();
-                _a.label = 2;
-            case 2: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 2:
+                if (!(url === "/kontakt" && method === 'POST')) return [3 /*break*/, 3];
+                body_1 = [];
+                req.on('data', function (chunk) {
+                    console.log(chunk.toString());
+                    body_1.push(chunk);
+                });
+                req.on('end', function () { return __awaiter(void 0, void 0, void 0, function () {
+                    var parsedBody, message;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                parsedBody = Buffer.concat(body_1).toString();
+                                message = parsedBody.split('=')[1];
+                                return [4 /*yield*/, (0, promises_1.writeFile)("contact/message-".concat(Date.now().toString(), ".txt"), message)];
+                            case 1:
+                                _a.sent();
+                                res.statusCode = 302;
+                                res.setHeader('Location', '/');
+                                return [2 /*return*/, res.end()];
+                        }
+                    });
+                }); });
+                return [3 /*break*/, 6];
+            case 3:
+                if (!(url === "/dziekujemy")) return [3 /*break*/, 5];
+                res.statusCode = 200;
+                return [4 /*yield*/, (0, promises_1.readFile)("./templates/thanks.html")];
+            case 4:
+                html = _a.sent();
+                res.setHeader("content-type", "text/html");
+                res.write(html);
+                res.end();
+                return [3 /*break*/, 6];
+            case 5:
+                if (url === "/api") {
+                    res.statusCode = 200;
+                    res.setHeader("content-type", "application/json");
+                    res.write(JSON.stringify(API));
+                    res.end();
+                }
+                else {
+                    res.statusCode = 404;
+                    res.setHeader("content-type", "application/json");
+                    res.write("Nieistniejący link");
+                    res.end();
+                }
+                _a.label = 6;
+            case 6: return [2 /*return*/];
         }
     });
 }); });
-server.listen(port, hostname, function () {
-    console.log("Server running at http://".concat(hostname, ":").concat(port));
+server.listen(PORT, HOSTNAME, function () {
+    console.log("Server running at http://".concat(HOSTNAME, ":").concat(PORT));
 });
