@@ -26,15 +26,19 @@ app.post('/kontakt', (req: Request, res: Response) => {
   const body = req.body;
   console.log(body);
 
-  const dataArray = []
+  const dataArray: string[] = []
   dataArray.push(body.name, body.email, body.theme, body.content);
 
   const query = "INSERT INTO contactForm (name, email, theme, content) VALUES ?";
 
-  connection.query(query, [[dataArray]], (err: MysqlError | null, result) => {
-    if (err) throw err
-    console.log("Number of records inserted: " + result.affectedRows)
+  connection.connect((err: MysqlError) => {
+    if(err) throw err;  
+    connection.query(query, [[dataArray]], (err: MysqlError | null, result) => {
+      if (err) throw err
+      console.log("Number of records inserted: " + result.affectedRows)
+    })
   })
+  
 
   res.redirect(302, '/');
 })
