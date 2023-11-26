@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Addresses {
+  AddressID Int     @id
+  UserID    Int?    @unique(map: "UserID")
+  Street    String  @db.VarChar(255)
+  City      String  @db.VarChar(50)
+  ZipCode   String? @db.VarChar(10)
+  Users     Users?  @relation(fields: [UserID], references: [UserID], onDelete: Restrict, onUpdate: Restrict, map: "addresses_ibfk_1")
+}
+
+model OrderDetails {
+  OrderDetailID Int       @id @default(autoincrement())
+  OrderID       Int?
+  ProductID     Int?
+  Quantity      Int?
+  Orders        Orders?   @relation(fields: [OrderID], references: [OrderID], onDelete: Restrict, onUpdate: Restrict, map: "orderdetails_ibfk_1")
+  Products      Products? @relation(fields: [ProductID], references: [ProductID], onDelete: Restrict, onUpdate: Restrict, map: "orderdetails_ibfk_2")
+
+  @@index([OrderID], map: "OrderID")
+  @@index([ProductID], map: "ProductID")
+}
+
+model Orders {
+  OrderID      Int            @id
+  UserID       Int?
+  OrderDate    DateTime?      @db.Date
+  OrderDetails OrderDetails[]
+  Users        Users?         @relation(fields: [UserID], references: [UserID], onDelete: Restrict, onUpdate: Restrict, map: "orders_ibfk_1")
+
+  @@index([UserID], map: "UserID")
+}
+
+model Products {
+  ProductID    Int            @id
+  ProductName  String         @db.VarChar(100)
+  Price        Decimal        @db.Decimal(10, 2)
+  OrderDetails OrderDetails[]
+}
+
+model Users {
+  UserID      Int        @id
+  UserName    String     @db.VarChar(50)
+  Email       String     @unique(map: "Email") @db.VarChar(100)
+  PhoneNumber String?    @db.VarChar(15)
+  Addresses   Addresses?
+  Orders      Orders[]
+}
