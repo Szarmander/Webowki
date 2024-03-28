@@ -13,7 +13,7 @@ exports.addressesRouter = void 0;
 const express_1 = require("express");
 const _1 = require(".");
 exports.addressesRouter = (0, express_1.Router)();
-exports.addressesRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addressesRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.json(yield _1.prisma.addresses.findMany());
     }
@@ -22,15 +22,15 @@ exports.addressesRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0,
         res.sendStatus(500);
     }
 }));
-exports.addressesRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addressesRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
         const users = yield _1.prisma.users.findMany({
             where: {
-                UserID: body.UserID
-            }
+                UserID: body.UserID,
+            },
         });
-        const found = users.some(item => item.UserID === body.UserID);
+        const found = users.some((item) => item.UserID === body.UserID);
         let addresses;
         if (found) {
             addresses = {
@@ -40,9 +40,9 @@ exports.addressesRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0
                 ZipCode: body.ZipCode || undefined,
                 Users: {
                     connect: {
-                        UserID: body.UserID
-                    }
-                }
+                        UserID: body.UserID,
+                    },
+                },
             };
         }
         else {
@@ -56,23 +56,23 @@ exports.addressesRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0
         res.json(yield _1.prisma.addresses.create({ data: addresses }));
     }
     catch (e) {
-        res.sendStatus(500);
+        res.json(e.message);
     }
 }));
-exports.addressesRouter.patch('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addressesRouter.patch("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
         if (body.AddressID && body.AddressID > 0) {
             res.json(yield _1.prisma.addresses.update({
                 where: {
-                    AddressID: body.AddressID
+                    AddressID: body.AddressID,
                 },
                 data: {
                     Street: body.Street || undefined,
                     City: body.City || undefined,
                     ZipCode: body.ZipCode || undefined,
-                    UserID: body.UserID || undefined
-                }
+                    UserID: body.UserID || undefined,
+                },
             }));
         }
         else
@@ -82,20 +82,20 @@ exports.addressesRouter.patch('/', (req, res) => __awaiter(void 0, void 0, void 
         res.sendStatus(500);
     }
 }));
-exports.addressesRouter.delete('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addressesRouter.delete("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
         if (body.AddressID && body.AddressID > 0)
             res.json(yield _1.prisma.addresses.delete({
                 where: {
-                    AddressID: body.AddressID
-                }
+                    AddressID: body.AddressID,
+                },
             }));
         else if (body.UserID && body.UserID > 0)
             res.json(yield _1.prisma.addresses.delete({
                 where: {
-                    UserID: body.UserID
-                }
+                    UserID: body.UserID,
+                },
             }));
         else
             throw Error;
